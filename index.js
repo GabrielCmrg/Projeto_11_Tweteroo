@@ -17,7 +17,17 @@ app.post("/sign-up", (request, response) => {
     response.send("OK");
     response.status(200);
     console.log("Response sent!");
-})
+});
+
+app.post("/tweets", (request, response) => {
+    console.log("POST request made to route /tweets");
+    const tweet = request.body;
+    tweets.push(tweet);
+    console.log("Tweet saved!");
+    response.send("OK");
+    response.status(200);
+    console.log("Response sent!");
+});
 
 app.listen(5000, () => {
     console.log("Server initiated at:\nhttp://127.0.0.1:5000\nhttp://localhost:5000")
