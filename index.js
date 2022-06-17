@@ -1,4 +1,4 @@
-import express from "express";
+import express, { response } from "express";
 import cors from "cors";
 
 const app = express();
@@ -25,6 +25,19 @@ app.post("/tweets", (request, response) => {
     tweets.push(tweet);
     console.log("Tweet saved!");
     response.send("OK");
+    response.status(200);
+    console.log("Response sent!");
+});
+
+app.get("/tweets", (request, response) => {
+    console.log("GET request made to route /tweets");
+    const lastTweets = tweets.slice(-10);
+    console.log("Got last 10 tweets.");
+    const formattedTweets = lastTweets.map(tweet => {
+        return {...tweet, avatar: users.find(user => user.username === tweet.username).avatar};
+    });
+    console.log("Added avatar key to tweets.");
+    response.send(formattedTweets);
     response.status(200);
     console.log("Response sent!");
 });
