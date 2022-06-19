@@ -1,4 +1,4 @@
-import express, { response } from "express";
+import express from "express";
 import cors from "cors";
 
 const app = express();
@@ -9,14 +9,14 @@ app.use(express.json());
 const users = [];
 const tweets = [];
 
-app.post("/sign-up", (request, response) => {
+app.post("/sign-up", (req, res) => {
     console.log("POST request made to route /sign-up");
-    const user = request.body;
+    const user = req.body;
 
     // cheks if the body is an object
     if (typeof(user) !== "object" || Array.isArray(user) || user === null) {
         console.log("Request body with invalid formats.");
-        response.sendStatus(400);
+        res.sendStatus(400);
         console.log("Response sent!");
         return;
     }
@@ -25,7 +25,7 @@ app.post("/sign-up", (request, response) => {
     const { username, avatar, ...rest } = user;
     if (Object.keys(rest).length > 0 || typeof(username) !== "string" || typeof(avatar) !== "string") {
         console.log("Invalid keys received");
-        response.sendStatus(400);
+        res.sendStatus(400);
         console.log("Response sent!");
         return;
     }
@@ -33,27 +33,27 @@ app.post("/sign-up", (request, response) => {
     // checks if username and avatar keys are filled
     if (username.trim().length === 0 || avatar.trim().length === 0) {
         console.log("username or avatar keys are empty");
-        response.status(400);
-        response.send("Todos os campos são obrigatórios!");
+        res.status(400);
+        res.send("Todos os campos são obrigatórios!");
         console.log("Response sent!");
         return;
     }
 
     users.push(user);
     console.log("User saved!");
-    response.status(201);
-    response.send("OK");
+    res.status(201);
+    res.send("OK");
     console.log("Response sent!");
 });
 
-app.post("/tweets", (request, response) => {
+app.post("/tweets", (req, res) => {
     console.log("POST request made to route /tweets");
-    const tweetToSend = request.body;
+    const tweetToSend = req.body;
 
     // cheks if the body is an object
     if (typeof(tweetToSend) !== "object" || Array.isArray(tweetToSend) || tweetToSend === null) {
         console.log("Request body with invalid formats.");
-        response.sendStatus(400);
+        res.sendStatus(400);
         console.log("Response sent!");
         return;
     }
@@ -62,7 +62,7 @@ app.post("/tweets", (request, response) => {
     const { username, tweet, ...rest } = tweetToSend;
     if (Object.keys(rest).length > 0 || typeof(username) !== "string" || typeof(tweet) !== "string") {
         console.log("Invalid keys received");
-        response.sendStatus(400);
+        res.sendStatus(400);
         console.log("Response sent!");
         return;
     }
@@ -70,20 +70,20 @@ app.post("/tweets", (request, response) => {
     // checks if username and tweet keys are filled
     if (username.trim().length === 0 || tweet.trim().length === 0) {
         console.log("username or tweet keys are empty");
-        response.status(400);
-        response.send("Todos os campos são obrigatórios!");
+        res.status(400);
+        res.send("Todos os campos são obrigatórios!");
         console.log("Response sent!");
         return;
     }
 
     tweets.push(tweetToSend);
     console.log("Tweet saved!");
-    response.status(201);
-    response.send("OK");
+    res.status(201);
+    res.send("OK");
     console.log("Response sent!");
 });
 
-app.get("/tweets", (request, response) => {
+app.get("/tweets", (req, res) => {
     console.log("GET request made to route /tweets");
     const lastTweets = tweets.slice(-10);
     console.log("Got last 10 tweets.");
@@ -91,8 +91,32 @@ app.get("/tweets", (request, response) => {
         return {...tweet, avatar: users.find(user => user.username === tweet.username).avatar};
     });
     console.log("Added avatar key to tweets.");
-    response.send(formattedTweets);
-    response.status(200);
+    res.send(formattedTweets);
+    res.status(200);
+    console.log("Response sent!");
+});
+
+app.get("/tweets/:username", (req, res) => {
+    const username = req.params.username;
+    console.log("GET request made to route /tweets/" + username);
+    const thisUser = users.find(user => user.username === username);
+
+    // checks if user exists
+    if (thisUser === undefined) {
+        console.log(username + " not found");
+        res.sendStatus(404);
+        return;
+    }
+
+    const avatar = thisUser.avatar;
+    const thisUserTweets = tweets.filter(tweet => tweet.username === username);
+    console.log("Got user's tweets");
+    const formattedTweets = thisUserTweets.map(tweet => {
+        return {...tweet, avatar};
+    });
+    console.log("Added avatar key to tweets.");
+    res.status(200);
+    res.send(formattedTweets);
     console.log("Response sent!");
 });
 
