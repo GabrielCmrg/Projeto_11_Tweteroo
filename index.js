@@ -67,6 +67,15 @@ app.post("/tweets", (request, response) => {
         return;
     }
 
+    // checks if username and tweet keys are filled
+    if (username.trim().length === 0 || tweet.trim().length === 0) {
+        console.log("username or tweet keys are empty");
+        response.status(400);
+        response.send("Todos os campos são obrigatórios!");
+        console.log("Response sent!");
+        return;
+    }
+
     tweets.push(tweetToSend);
     console.log("Tweet saved!");
     response.send("OK");
