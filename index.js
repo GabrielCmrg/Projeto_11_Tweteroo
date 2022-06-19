@@ -21,6 +21,15 @@ app.post("/sign-up", (request, response) => {
         return;
     }
 
+    // checks if there is other keys or if a key is invalid
+    const { username, avatar, ...rest } = user;
+    if (Object.keys(rest).length > 0 || typeof(username) !== "string" || typeof(avatar) !== "string") {
+        console.log("Invalid keys received");
+        response.sendStatus(400);
+        console.log("Response sent!");
+        return;
+    }
+
     users.push(user);
     console.log("User saved!");
     response.send("OK");
@@ -39,7 +48,16 @@ app.post("/tweets", (request, response) => {
         console.log("Response sent!");
         return;
     }
-    
+
+    // checks if there is other keys or if a key is invalid
+    const { username, tweet, ...rest } = tweetToSend;
+    if (Object.keys(rest).length > 0 || typeof(username) !== "string" || typeof(tweet) !== "string") {
+        console.log("Invalid keys received");
+        response.sendStatus(400);
+        console.log("Response sent!");
+        return;
+    }
+
     tweets.push(tweetToSend);
     console.log("Tweet saved!");
     response.send("OK");
