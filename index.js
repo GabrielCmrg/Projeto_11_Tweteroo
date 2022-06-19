@@ -30,6 +30,15 @@ app.post("/sign-up", (request, response) => {
         return;
     }
 
+    // checks if username and avatar keys are filled
+    if (username.trim().length === 0 || avatar.trim().length === 0) {
+        console.log("username or avatar keys are empty");
+        response.status(400);
+        response.send("Todos os campos são obrigatórios!");
+        console.log("Response sent!");
+        return;
+    }
+
     users.push(user);
     console.log("User saved!");
     response.send("OK");
