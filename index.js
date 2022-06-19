@@ -12,6 +12,15 @@ const tweets = [];
 app.post("/sign-up", (request, response) => {
     console.log("POST request made to route /sign-up");
     const user = request.body;
+
+    // cheks if the body is an object
+    if (typeof(user) !== "object" || Array.isArray(user) || user === null) {
+        console.log("Request body with invalid formats.");
+        response.sendStatus(400);
+        console.log("Response sent!");
+        return;
+    }
+
     users.push(user);
     console.log("User saved!");
     response.send("OK");
@@ -21,8 +30,17 @@ app.post("/sign-up", (request, response) => {
 
 app.post("/tweets", (request, response) => {
     console.log("POST request made to route /tweets");
-    const tweet = request.body;
-    tweets.push(tweet);
+    const tweetToSend = request.body;
+
+    // cheks if the body is an object
+    if (typeof(tweetToSend) !== "object" || Array.isArray(tweetToSend) || tweetToSend === null) {
+        console.log("Request body with invalid formats.");
+        response.sendStatus(400);
+        console.log("Response sent!");
+        return;
+    }
+    
+    tweets.push(tweetToSend);
     console.log("Tweet saved!");
     response.send("OK");
     response.status(200);
