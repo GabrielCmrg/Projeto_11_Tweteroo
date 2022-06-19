@@ -41,8 +41,8 @@ app.post("/sign-up", (request, response) => {
 
     users.push(user);
     console.log("User saved!");
+    response.status(201);
     response.send("OK");
-    response.status(200);
     console.log("Response sent!");
 });
 
@@ -78,8 +78,8 @@ app.post("/tweets", (request, response) => {
 
     tweets.push(tweetToSend);
     console.log("Tweet saved!");
+    response.status(201);
     response.send("OK");
-    response.status(200);
     console.log("Response sent!");
 });
 
