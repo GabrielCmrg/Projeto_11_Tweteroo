@@ -39,14 +39,22 @@ app.post("/sign-up", (req, res) => {
         return;
     }
 
-    if (users.find(user => user.username === username) === undefined) {
+    // create or update user
+    const savedUser = users.find(user => user.username === username);
+    if (savedUser === undefined) {
+        console.log("User is not in database");
         users.push(user);
         console.log("User saved!");
         res.status(201);
         res.send("OK");
         console.log("Response sent!");
     } else {
-
+        console.log("User is already in database");
+        users[users.indexOf(savedUser)].avatar = avatar;
+        console.log("Updated user's avatar!");
+        res.status(201);
+        res.send("OK");
+        console.log("Response sent!");
     }
 });
 
@@ -85,6 +93,16 @@ app.post("/tweets", (req, res) => {
         console.log("user header or tweet key are empty");
         res.status(400);
         res.send("Todos os campos são obrigatórios!");
+        console.log("Response sent!");
+        return;
+    }
+
+    // checks if user exists before saving
+    const savedUser = users.find(user => user.username === username);
+    if (savedUser === undefined) {
+        console.log("User is not in database");
+        res.status(400);
+        res.send("This user do not exist, please sign-up");
         console.log("Response sent!");
         return;
     }
