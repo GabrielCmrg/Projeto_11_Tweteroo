@@ -3,8 +3,9 @@ import cors from "cors";
 
 const app = express();
 app.use(cors());
-console.log("Server initiated with cors.");
+console.log("Server cors enabled.");
 app.use(express.json());
+console.log("Server json enabled.");
 
 const users = [];
 const tweets = [];
