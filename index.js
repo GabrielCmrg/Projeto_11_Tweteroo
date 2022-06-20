@@ -85,10 +85,22 @@ app.post("/tweets", (req, res) => {
 
 app.get("/tweets", (req, res) => {
     console.log("GET request made to route /tweets");
-    const page = parseInt(req.query.page);
-
+    const pageQuery = req.query.page;
+    if (pageQuery === undefined) {
+        console.log("Pagination query not found, assuming page 1");
+        const page = 1;
+    } else {
+        console.log("Pagination query found, trying to convert to number");
+        const page = parseInt(pageQuery);
+        if (isNaN(page) || page < 2) {
+            console.log("Pagination is not a number or is lesser than 2");
+            res.status(400);
+            res.send("Informe uma página válida!");
+            console.log("Response sent!");
+        }
+    }
     const tweetsToSend = tweets.slice(10 * (page - 1), 10 * page);
-    console.log("Got last 10 tweets.");
+    console.log(`Got last ${(page - 1) * 10} to ${page * 10 - 1} tweets.`);
     const formattedTweets = tweetsToSend.map(tweet => {
         return {...tweet, avatar: users.find(user => user.username === tweet.username).avatar};
     });
