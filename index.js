@@ -39,11 +39,15 @@ app.post("/sign-up", (req, res) => {
         return;
     }
 
-    users.push(user);
-    console.log("User saved!");
-    res.status(201);
-    res.send("OK");
-    console.log("Response sent!");
+    if (users.find(user => user.username === username) === undefined) {
+        users.push(user);
+        console.log("User saved!");
+        res.status(201);
+        res.send("OK");
+        console.log("Response sent!");
+    } else {
+
+    }
 });
 
 app.post("/tweets", (req, res) => {
@@ -85,7 +89,8 @@ app.post("/tweets", (req, res) => {
         return;
     }
 
-    tweets.unshift(tweetToSend);
+    const tweetToSave = {username, tweet};
+    tweets.unshift(tweetToSave);
     console.log("Tweet saved!");
     res.status(201);
     res.send("OK");
