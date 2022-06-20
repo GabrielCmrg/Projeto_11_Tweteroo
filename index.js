@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import fs from "fs";
 
 const app = express();
 app.use(cors());
@@ -7,8 +8,9 @@ console.log("Server cors enabled.");
 app.use(express.json());
 console.log("Server json enabled.");
 
-const users = [];
-const tweets = [];
+let database = JSON.parse(fs.readFileSync(".database.json", "utf-8"));
+const users = database.users;
+const tweets = database.tweets;
 
 app.post("/sign-up", (req, res) => {
     console.log("POST request made to route /sign-up");
@@ -45,6 +47,8 @@ app.post("/sign-up", (req, res) => {
     if (savedUser === undefined) {
         console.log("User is not in database");
         users.push(user);
+        database = {users, tweets};
+        fs.writeFileSync(".database.json", JSON.stringify(database, null, 2));
         console.log("User saved!");
         res.status(201);
         res.send("OK");
@@ -52,6 +56,8 @@ app.post("/sign-up", (req, res) => {
     } else {
         console.log("User is already in database");
         users[users.indexOf(savedUser)].avatar = avatar;
+        database = {users, tweets};
+        fs.writeFileSync(".database.json", JSON.stringify(database, null, 2));
         console.log("Updated user's avatar!");
         res.status(201);
         res.send("OK");
@@ -110,6 +116,8 @@ app.post("/tweets", (req, res) => {
 
     const tweetToSave = {username, tweet};
     tweets.unshift(tweetToSave);
+    database = {users, tweets};
+    fs.writeFileSync(".database.json", JSON.stringify(database, null, 2));
     console.log("Tweet saved!");
     res.status(201);
     res.send("OK");
