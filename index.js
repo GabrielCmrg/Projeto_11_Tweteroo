@@ -76,7 +76,7 @@ app.post("/tweets", (req, res) => {
         return;
     }
 
-    tweets.push(tweetToSend);
+    tweets.unshift(tweetToSend);
     console.log("Tweet saved!");
     res.status(201);
     res.send("OK");
@@ -85,9 +85,11 @@ app.post("/tweets", (req, res) => {
 
 app.get("/tweets", (req, res) => {
     console.log("GET request made to route /tweets");
-    const lastTweets = tweets.slice(-10);
+    const page = parseInt(req.query.page);
+
+    const tweetsToSend = tweets.slice(10 * (page - 1), 10 * page);
     console.log("Got last 10 tweets.");
-    const formattedTweets = lastTweets.map(tweet => {
+    const formattedTweets = tweetsToSend.map(tweet => {
         return {...tweet, avatar: users.find(user => user.username === tweet.username).avatar};
     });
     console.log("Added avatar key to tweets.");
