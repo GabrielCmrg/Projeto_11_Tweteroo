@@ -8,7 +8,14 @@ console.log("Server cors enabled.");
 app.use(express.json());
 console.log("Server json enabled.");
 
-let database = JSON.parse(fs.readFileSync(".database.json", "utf-8"));
+let database;
+if (fs.existsSync(".database.json")) {
+    database = JSON.parse(fs.readFileSync(".database.json", "utf-8"));
+} else {
+    database = {users: [], tweets: []};
+    fs.writeFileSync(".database.json", JSON.stringify(database, null, 2));
+}
+
 const users = database.users;
 const tweets = database.tweets;
 
