@@ -59,17 +59,26 @@ app.post("/tweets", (req, res) => {
     }
 
     // checks if there is other keys or if a key is invalid
-    const { username, tweet, ...rest } = tweetToSend;
-    if (Object.keys(rest).length > 0 || typeof(username) !== "string" || typeof(tweet) !== "string") {
+    const { tweet, ...rest } = tweetToSend;
+    if (Object.keys(rest).length > 0 || typeof(tweet) !== "string") {
         console.log("Invalid keys received");
         res.sendStatus(400);
         console.log("Response sent!");
         return;
     }
 
-    // checks if username and tweet keys are filled
+    // checks if username header is invalid
+    const username = req.headers.user;
+    if  (typeof(username) !== "string") {
+        console.log("Invalid user header received");
+        res.sendStatus(400);
+        console.log("Response sent!");
+        return;
+    }
+
+    // checks if user and tweet are filled
     if (username.trim().length === 0 || tweet.trim().length === 0) {
-        console.log("username or tweet keys are empty");
+        console.log("user header or tweet key are empty");
         res.status(400);
         res.send("Todos os campos são obrigatórios!");
         console.log("Response sent!");
