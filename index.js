@@ -141,7 +141,7 @@ app.get("/tweets", (req, res) => {
     } else {
         console.log("Pagination query found, trying to convert to number");
         page = parseInt(pageQuery);
-        if (isNaN(page) || page < 2) {
+        if (isNaN(page) || page < 1) {
             console.log("Pagination is not a number or is lesser than 2");
             res.status(400);
             res.send("Informe uma página válida!");
